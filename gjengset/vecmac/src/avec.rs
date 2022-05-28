@@ -1,3 +1,5 @@
+use crate::avec;
+
 pub mod avec {
     #[macro_export]
     macro_rules! avec {
@@ -20,6 +22,12 @@ pub mod avec {
         // Something like `typedef` would use the following:
         ($arg1: ident as $arg2: ty) => {
             type $arg1 = $arg2;
+        };
+
+        ($element:expr) => {
+            let mut vs = Vec::new();
+            vs.push($element);
+            vs
         }
     }
 
@@ -52,4 +60,16 @@ pub mod avec {
 #[test]
 fn avec_no_pattern_no_return() {
     avec::avec!();
+}
+
+fn empty_vec() {
+    let x: Vec<u32> = avec::avec!([]);
+    assert!(x.is_empty());
+}
+
+fn single_element() {
+    let x: Vec<u32> = avec!([42]);
+    assert!(!x.is_empty());
+    assert!(x.len(), 1);
+    assert_eq!(x[0], 42);
 }
